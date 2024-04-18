@@ -8,7 +8,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MemeMaker.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mememaker.MemeMaker.MemeMaker.Controller">
    <children>
       <ScrollPane fx:id="assetbrowser" layoutX="550.0" layoutY="120.0" prefHeight="380.0" prefWidth="200.0" />
       <ScrollPane fx:id="CanvasArea" layoutX="150.0" layoutY="25.0" prefHeight="475.0" prefWidth="400.0" />

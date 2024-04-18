@@ -1,4 +1,4 @@
-package MemeMaker;
+package mememaker.MemeMaker.MemeMaker;
 
 // import javafx.application.Application;
 // import javafx.beans.value.ChangeListener;
@@ -240,6 +240,28 @@ public class Controller {
             System.out.println("Screenshot saved to: " + file.getAbsolutePath());
         } catch (IOException ex) {
             System.err.println("Error saving screenshot: " + ex.getMessage());
+        }
+    }
+
+    @FXML
+    protected void onHelloButtonClick() {
+
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Choose Directory");
+
+
+        Stage stage = (Stage) welcomeText.getScene().getWindow();
+
+
+        File selectedDirectory = directoryChooser.showDialog(stage);
+
+
+        if (selectedDirectory != null) {
+            welcomeText.setText("Selected Directory: " + selectedDirectory.getAbsolutePath());
+
+            System.out.println( selectedDirectory.getAbsolutePath());
+        } else {
+            welcomeText.setText("No directory selected.");
         }
     }
 
