@@ -5,6 +5,7 @@ package mememaker.MemeMaker.MemeMaker;
 // import javafx.beans.value.ObservableValue;
 // import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -55,6 +56,9 @@ public class Controller {
     private AnchorPane drawingCanvas, canvasField;
 
     private Scale scale;
+
+    private double xvalue;
+    private double yvalue;
 
     public void setAssetbrowser(String folderpath) {
         // String folderPath = "D:/Areeb"; // Replace with your folder path
@@ -263,6 +267,29 @@ public class Controller {
         } else {
             welcomeText.setText("No directory selected.");
         }
+    }
+
+
+
+
+
+    @FXML
+    void Drag(MouseEvent event) {
+        double newX = event.getSceneX() - xvalue;
+        double newY = event.getSceneY() - yvalue;
+
+        Dragger.setTranslateX(newX);
+        Dragger.setTranslateY(newY);
+        System.out.println(newX);
+        //System.out.println(Dragger.getLayoutX());
+        System.out.println(":---");
+    }
+
+    @FXML
+    void Pressed (MouseEvent event) {
+        xvalue = event.getSceneX() - Dragger.getTranslateX();
+        yvalue = event.getSceneY() - Dragger.getTranslateY();
+        //System.out.println(xvalue);
     }
 
 }
