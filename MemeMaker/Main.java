@@ -1,4 +1,4 @@
-package mememaker.MemeMaker.MemeMaker;
+package MemeMaker;
 
 // import java.io.IOException;
 import javafx.application.Application;

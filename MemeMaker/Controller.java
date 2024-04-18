@@ -1,4 +1,4 @@
-package mememaker.MemeMaker.MemeMaker;
+package MemeMaker;
 
 // import javafx.application.Application;
 // import javafx.beans.value.ChangeListener;
@@ -11,14 +11,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
+// import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 // import javafx.stage.Stage;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.scene.layout.CornerRadii;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 // import javafx.scene.control.ScrollPane;
 // import javafx.application.Application;
@@ -57,8 +60,8 @@ public class Controller {
 
     private Scale scale;
 
-    private double xvalue;
-    private double yvalue;
+    private double moveDragX;
+    private double moveDragY;
 
     public void setAssetbrowser(String folderpath) {
         // String folderPath = "D:/Areeb"; // Replace with your folder path
@@ -102,9 +105,18 @@ public class Controller {
             imageView.setOnMouseClicked(event -> {
                 Image clickedImage = ((ImageView) event.getSource()).getImage();
                 ImageView copyImageView = new ImageView(clickedImage);
+
+                copyImageView.setOnMousePressed(e -> Pressed(e));
+                copyImageView.setOnMouseDragged(e -> Drag(e));
+
                 drawingCanvas.getChildren().add(copyImageView);
                 AnchorPane.setTopAnchor(copyImageView, 0.0);
                 AnchorPane.setLeftAnchor(copyImageView, 0.0);
+                double scaledWidth = drawingCanvas.getWidth() * scale.getX();
+                double scaledHeight = drawingCanvas.getHeight() * scale.getY();
+
+                canvasField.setMinSize(scaledWidth, scaledHeight);
+                canvasField.setMaxSize(scaledWidth, scaledHeight);
             });
 
             gridPane.add(imageView, col, row);
@@ -155,6 +167,24 @@ public class Controller {
     @FXML
     void SetDefaultBrowser(ActionEvent event) {
         setAssetbrowser("D:/Areeb");
+    }
+
+    @FXML
+    void ChooseImageFolder() {
+
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Choose Directory");
+
+        Stage stage = (Stage) assetbrowser.getScene().getWindow();
+
+        File selectedDirectory = directoryChooser.showDialog(stage);
+
+        if (selectedDirectory != null) {
+            // System.out.println( "No path selected");
+            setAssetbrowser(selectedDirectory.getAbsolutePath());
+        } else {
+            System.out.println("No path selected");
+        }
     }
 
     @FXML
@@ -247,49 +277,25 @@ public class Controller {
         }
     }
 
-    @FXML
-    protected void onHelloButtonClick() {
-
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Choose Directory");
-
-
-        Stage stage = (Stage) welcomeText.getScene().getWindow();
-
-
-        File selectedDirectory = directoryChooser.showDialog(stage);
-
-
-        if (selectedDirectory != null) {
-            welcomeText.setText("Selected Directory: " + selectedDirectory.getAbsolutePath());
-
-            System.out.println( selectedDirectory.getAbsolutePath());
-        } else {
-            welcomeText.setText("No directory selected.");
-        }
-    }
-
-
-
-
-
-    @FXML
+    // @FXML
     void Drag(MouseEvent event) {
-        double newX = event.getSceneX() - xvalue;
-        double newY = event.getSceneY() - yvalue;
 
-        Dragger.setTranslateX(newX);
-        Dragger.setTranslateY(newY);
-        System.out.println(newX);
-        //System.out.println(Dragger.getLayoutX());
-        System.out.println(":---");
+        Node sourceNode = (Node) event.getSource();
+        double newX = event.getSceneX() - moveDragX;
+        double newY = event.getSceneY() - moveDragY;
+
+        sourceNode.setTranslateX(newX);
+        sourceNode.setTranslateY(newY);
+        // // System.out.println(Dragger.getLayoutX());
+        // System.out.println(":---");
     }
 
-    @FXML
-    void Pressed (MouseEvent event) {
-        xvalue = event.getSceneX() - Dragger.getTranslateX();
-        yvalue = event.getSceneY() - Dragger.getTranslateY();
-        //System.out.println(xvalue);
+    // @FXML
+    void Pressed(MouseEvent event) {
+        Node sourceNode = (Node) event.getSource();
+        moveDragX = (event.getSceneX() - sourceNode.getTranslateX());
+        moveDragY = (event.getSceneY() - sourceNode.getTranslateY());
+        // System.out.println(xvalue);
     }
 
 }
