@@ -49,6 +49,17 @@ public class Controller {
     @FXML
     private ScrollPane CanvasArea;
 
+//    @FXML
+//    private Pane myPane;
+//
+//    @FXML
+//    private ColorPicker myColorPicker;
+//
+//    public void changeColor(ActionEvent evemt){
+//        Color myColor = myColorPicker.getValue();
+//        myPane.setBackground(new Background(new BackgroundFill(myColor, null, null)));
+//    }
+
     @FXML
     private Button folderchooser;
 
