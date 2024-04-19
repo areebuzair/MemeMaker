@@ -23,6 +23,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
 // import javafx.scene.control.ScrollPane;
 // import javafx.application.Application;
 // import javafx.geometry.Insets;
@@ -62,6 +63,16 @@ public class Controller {
 
     private double moveDragX;
     private double moveDragY;
+
+
+    @FXML
+    private ColorPicker myColorPicker;
+
+    public void changeColor(ActionEvent evemt) {
+        Color myColor = myColorPicker.getValue();
+        drawingCanvas.setBackground(new Background(new BackgroundFill(myColor, null,
+                null)));
+    }
 
     public void setAssetbrowser(String folderpath) {
         // String folderPath = "D:/Areeb"; // Replace with your folder path
@@ -295,7 +306,7 @@ public class Controller {
         Node sourceNode = (Node) event.getSource();
         moveDragX = (event.getSceneX() - sourceNode.getTranslateX());
         moveDragY = (event.getSceneY() - sourceNode.getTranslateY());
-        // System.out.println(xvalue);
+         System.out.println(event.getSceneX());
     }
 
 }
