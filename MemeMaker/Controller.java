@@ -4,6 +4,7 @@ package MemeMaker;
 // import javafx.beans.value.ChangeListener;
 // import javafx.beans.value.ObservableValue;
 // import javafx.scene.Scene;
+import java.time.LocalDate;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -177,7 +178,7 @@ public class Controller {
 
     @FXML
     void SetDefaultBrowser(ActionEvent event) {
-        setAssetbrowser("D:/Areeb");
+        setAssetbrowser("./Meme");
     }
 
     @FXML
@@ -275,9 +276,10 @@ public class Controller {
 
         // Render the AnchorPane to the WritableImage
         drawingCanvas.snapshot(null, writableImage);
+        LocalDate currentDate = LocalDate.now();
 
         // Create a file to save the screenshot
-        File file = new File("screenshot.png");
+        File file = new File("Meme - " + currentDate +" .png");
 
         try {
             // Write the image to the file

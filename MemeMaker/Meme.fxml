@@ -18,7 +18,7 @@
          <children>
             <Button fx:id="defaultfolder" layoutX="10.0" layoutY="37.0" mnemonicParsing="false" onAction="#SetDefaultBrowser" prefHeight="6.0" prefWidth="73.0" style="-fx-background-color: #ADD8E6;" text="Default" />
             <Label alignment="CENTER" contentDisplay="CENTER" layoutX="57.0" layoutY="14.0" prefHeight="17.0" prefWidth="85.0" text="Assets" textFill="WHITE" />
-            <Button fx:id="folderchooser" layoutX="93.0" layoutY="37.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="96.0" style="-fx-background-color: #ADD8E6;" text="Choose Folder" textFill="#080808" />
+            <Button fx:id="folderchooser" layoutX="93.0" layoutY="37.0" mnemonicParsing="false" onAction="#ChooseImageFolder" prefHeight="18.0" prefWidth="96.0" style="-fx-background-color: #ADD8E6;" text="Choose Folder" textFill="#080808" />
          </children>
       </AnchorPane>
       <MenuBar layoutY="1.0" prefHeight="25.0" prefWidth="750.0" style="-fx-background-color: #acacad;">
