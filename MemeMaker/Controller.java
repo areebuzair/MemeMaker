@@ -4,7 +4,8 @@ package MemeMaker;
 // import javafx.beans.value.ChangeListener;
 // import javafx.beans.value.ObservableValue;
 // import javafx.scene.Scene;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+// import java.time.LocalDate;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -23,6 +24,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+// import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 // import javafx.scene.control.ScrollPane;
@@ -65,6 +67,7 @@ public class Controller {
     private double moveDragX;
     private double moveDragY;
 
+    private Node selectedNode;
 
     @FXML
     private ColorPicker myColorPicker;
@@ -201,6 +204,7 @@ public class Controller {
 
     @FXML
     public void setCanvas() {
+        selectedNode = null;
         drawingCanvas = new AnchorPane();
         drawingCanvas.setPrefSize(600, 400); // Set initial size
         drawingCanvas.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -276,10 +280,14 @@ public class Controller {
 
         // Render the AnchorPane to the WritableImage
         drawingCanvas.snapshot(null, writableImage);
-        LocalDate currentDate = LocalDate.now();
+        // LocalDate currentDate = LocalDate.now();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        // Printing the current date and time
+        // System.out.println("Current Date and Time: " );
 
         // Create a file to save the screenshot
-        File file = new File("Meme - " + currentDate +" .png");
+        File file = new File("Meme - " + String.valueOf(currentDateTime).replace(".", "").replace(":", "") + " .png");
 
         try {
             // Write the image to the file
@@ -306,9 +314,16 @@ public class Controller {
     // @FXML
     void Pressed(MouseEvent event) {
         Node sourceNode = (Node) event.getSource();
+        selectedNode = sourceNode;
         moveDragX = (event.getSceneX() - sourceNode.getTranslateX());
         moveDragY = (event.getSceneY() - sourceNode.getTranslateY());
-         System.out.println(event.getSceneX());
+        // System.out.println(event.getSceneX());
+    }
+
+    public void deleteSelectedNode() {
+        if (selectedNode == null) return;
+            drawingCanvas.getChildren().remove(selectedNode);
+        selectedNode = null;
     }
 
 }

@@ -6,6 +6,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+// import java.io.IOException;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
 
 public class Main extends Application {
     @Override
@@ -14,6 +17,25 @@ public class Main extends Application {
         Parent root = loader.load();
         Controller controller = loader.getController();
         controller.setCanvas();
+
+        root.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
+
+                switch (event.getCode()) {
+
+                    case DELETE:
+                    case BACK_SPACE:
+                        controller.deleteSelectedNode();
+                        break;
+                    default:
+                    System.out.println(event.getCode());
+                        break;
+                }
+            }
+        });
+
         primaryStage.setTitle("Meme Maker");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
