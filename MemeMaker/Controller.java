@@ -4,9 +4,15 @@ package MemeMaker;
 // import javafx.beans.value.ChangeListener;
 // import javafx.beans.value.ObservableValue;
 // import javafx.scene.Scene;
+// import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.KeyEvent;
+
 import java.time.LocalDateTime;
+// import javafx.event.Event;
+// import javafx.event.EventHandler;
 // import java.time.LocalDate;
 import javafx.scene.control.ScrollPane;
+// import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
@@ -27,6 +33,7 @@ import javafx.scene.Node;
 // import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Label;
 // import javafx.scene.control.ScrollPane;
 // import javafx.application.Application;
 // import javafx.geometry.Insets;
@@ -40,6 +47,8 @@ import javafx.scene.image.WritableImage;
 import javax.imageio.ImageIO;
 // import java.io.File;
 import java.io.IOException;
+
+import javafx.scene.control.TextArea;
 // import javafx.stage.Stage;
 
 import java.io.File;
@@ -55,12 +64,12 @@ public class Controller {
     private Button defaultfolder;
 
     @FXML
-    private ScrollPane CanvasArea;
+    private AnchorPane CanvasArea;
 
     @FXML
     private Button folderchooser;
 
-    private AnchorPane drawingCanvas, canvasField;
+    private AnchorPane drawingCanvas;
 
     private Scale scale;
 
@@ -71,6 +80,9 @@ public class Controller {
 
     @FXML
     private ColorPicker myColorPicker;
+
+    @FXML
+    private TextArea textInputArea;
 
     public void changeColor(ActionEvent evemt) {
         Color myColor = myColorPicker.getValue();
@@ -127,11 +139,7 @@ public class Controller {
                 drawingCanvas.getChildren().add(copyImageView);
                 AnchorPane.setTopAnchor(copyImageView, 0.0);
                 AnchorPane.setLeftAnchor(copyImageView, 0.0);
-                double scaledWidth = drawingCanvas.getWidth() * scale.getX();
-                double scaledHeight = drawingCanvas.getHeight() * scale.getY();
 
-                canvasField.setMinSize(scaledWidth, scaledHeight);
-                canvasField.setMaxSize(scaledWidth, scaledHeight);
             });
 
             gridPane.add(imageView, col, row);
@@ -144,6 +152,23 @@ public class Controller {
         }
 
         return gridPane;
+    }
+
+    @FXML
+    void AddTextBox(ActionEvent event) {
+        Label label = new Label("Text will appear here");
+        label.setMaxWidth(300);
+        // label.setId("resultLabel");
+        label.setWrapText(true); // Enable word wrapping for the label
+        label.setPrefHeight(Label.USE_COMPUTED_SIZE);
+
+        label.setOnMousePressed(e -> Pressed(e));
+        label.setOnMouseDragged(e -> Drag(e));
+
+        drawingCanvas.getChildren().add(label);
+        AnchorPane.setTopAnchor(label, 0.0);
+        AnchorPane.setLeftAnchor(label, 0.0);
+
     }
 
     private List<Image> loadImagesFromFolder(String folderPath) {
@@ -206,11 +231,9 @@ public class Controller {
     public void setCanvas() {
         selectedNode = null;
         drawingCanvas = new AnchorPane();
-        drawingCanvas.setPrefSize(600, 400); // Set initial size
+        drawingCanvas.setPrefSize(400, 50); // Set initial size
         drawingCanvas.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        canvasField = new AnchorPane();
-        canvasField.getChildren().add(drawingCanvas);
         AnchorPane.setTopAnchor(drawingCanvas, 0.0);
         AnchorPane.setLeftAnchor(drawingCanvas, 0.0);
         // canvasField.setBackground(new Background(new BackgroundFill(Color.YELLOW,
@@ -223,12 +246,10 @@ public class Controller {
         // AnchorPane.setLeftAnchor(text, 10.0);
 
         // Create a CanvasArea and set the AnchorPane as its content
-        CanvasArea.setContent(canvasField);
+        CanvasArea.getChildren().add(drawingCanvas);
 
         // CanvasArea.setBackground(new Background(new BackgroundFill(Color.RED,
         // CornerRadii.EMPTY, Insets.EMPTY)));
-        CanvasArea.setFitToWidth(true);
-        CanvasArea.setFitToHeight(true);
         // Disable the default scroll wheel function
         CanvasArea.setOnScrollStarted(e -> e.consume());
         // CanvasArea.setOnScroll(e -> e.consume());
@@ -243,7 +264,7 @@ public class Controller {
         drawingCanvas.getTransforms().add(scale);
 
         // Set up scroll event handler on AnchorPane
-        drawingCanvas.setOnScroll((ScrollEvent event) -> {
+        CanvasArea.setOnScroll((ScrollEvent event) -> {
             event.consume();
             double deltaY = event.getDeltaY();
             double scaleFactor = 0.01; // Adjust this factor as needed
@@ -253,11 +274,7 @@ public class Controller {
             scale.setX(newScale);
             scale.setY(newScale);
 
-            double scaledWidth = drawingCanvas.getWidth() * scale.getX();
-            double scaledHeight = drawingCanvas.getHeight() * scale.getY();
-
-            canvasField.setMinSize(scaledWidth, scaledHeight);
-            canvasField.setMaxSize(scaledWidth, scaledHeight);
+            // drawingCanvas.setStyle("-fx-scale-x: 1.5; -fx-scale-y: 1.5;");
 
             // text.setText(String.valueOf(deltaY));
 
@@ -269,11 +286,6 @@ public class Controller {
         scale.setX(1);
         scale.setY(1);
 
-        double scaledWidth = drawingCanvas.getWidth() * scale.getX();
-        double scaledHeight = drawingCanvas.getHeight() * scale.getY();
-
-        canvasField.setMinSize(scaledWidth, scaledHeight);
-        canvasField.setMaxSize(scaledWidth, scaledHeight);
         // Create a WritableImage object with the same dimensions as the AnchorPane
         WritableImage writableImage = new WritableImage((int) drawingCanvas.getWidth(),
                 (int) drawingCanvas.getHeight());
@@ -298,32 +310,106 @@ public class Controller {
         }
     }
 
-    // @FXML
-    void Drag(MouseEvent event) {
-
-        Node sourceNode = (Node) event.getSource();
+    @FXML
+    void CanvasPan(MouseEvent event) {
+        Node sourceNode;
+        if (event.getButton() == javafx.scene.input.MouseButton.MIDDLE) {
+            sourceNode = drawingCanvas;
+        } else {
+            return;
+        }
         double newX = event.getSceneX() - moveDragX;
         double newY = event.getSceneY() - moveDragY;
 
         sourceNode.setTranslateX(newX);
         sourceNode.setTranslateY(newY);
+        event.consume();
         // // System.out.println(Dragger.getLayoutX());
         // System.out.println(":---");
     }
 
-    // @FXML
-    void Pressed(MouseEvent event) {
-        Node sourceNode = (Node) event.getSource();
-        selectedNode = sourceNode;
+    @FXML
+    void CanvasPanStart(MouseEvent event) {
+        Node sourceNode;
+        if (event.getButton() == javafx.scene.input.MouseButton.MIDDLE) {
+            sourceNode = drawingCanvas;
+        } else {
+            if(selectedNode != null){
+                selectedNode.getStyleClass().remove("selected");
+                selectedNode = null;
+            }
+            return;
+        }
+
+        // Prepare for drag
         moveDragX = (event.getSceneX() - sourceNode.getTranslateX());
         moveDragY = (event.getSceneY() - sourceNode.getTranslateY());
+
+        event.consume();
         // System.out.println(event.getSceneX());
     }
 
+    // @FXML
+    void Drag(MouseEvent event) {
+        if (event.getButton() == javafx.scene.input.MouseButton.MIDDLE) {
+            return;
+        }
+        Node sourceNode = (Node) event.getSource();
+        double newX = event.getSceneX() - moveDragX;
+        double newY = event.getSceneY() - moveDragY;
+
+        sourceNode.setTranslateX( sourceNode.getTranslateX() + ( newX ) / scale.getX());
+        sourceNode.setTranslateY( sourceNode.getTranslateY() + ( newY ) / scale.getY());
+
+        moveDragX = event.getSceneX();
+        moveDragY = event.getSceneY();
+
+        event.consume();
+        System.out.println(sourceNode.getTranslateX());
+        System.out.println(":---");
+    }
+
+    // @FXML
+    void Pressed(MouseEvent event) {
+        if (event.getButton() == javafx.scene.input.MouseButton.MIDDLE) {
+            return;
+        }
+        if (selectedNode != null)
+            selectedNode.getStyleClass().remove("selected");
+        Node sourceNode = (Node) event.getSource();
+        selectedNode = sourceNode;
+        selectedNode.getStyleClass().add("selected");
+
+        // Prepare for drag
+        moveDragX = (event.getSceneX());
+        moveDragY = (event.getSceneY());
+
+        if (selectedNode instanceof Label) {
+            textInputArea.setText(((Label) event.getSource()).getText());
+        }
+        // System.out.println(event.getSceneX());
+        event.consume();
+    }
+
     public void deleteSelectedNode() {
-        if (selectedNode == null) return;
-            drawingCanvas.getChildren().remove(selectedNode);
+        if (selectedNode == null)
+            return;
+        drawingCanvas.getChildren().remove(selectedNode);
         selectedNode = null;
+    }
+
+    @FXML
+    void ChangeLabelText(KeyEvent event) {
+        String newText = textInputArea.getText();
+        // System.out.println("Fnc called");
+
+        // Check if the selectedNode is a Label before casting
+        if (selectedNode instanceof Label) {
+            Label label = (Label) selectedNode;
+            label.setText(newText);
+        } else {
+            System.out.println("Selected node is not a Label.");
+        }
     }
 
 }

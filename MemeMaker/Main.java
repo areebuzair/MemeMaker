@@ -38,6 +38,11 @@ public class Main extends Application {
 
         primaryStage.setTitle("Meme Maker");
         primaryStage.setScene(new Scene(root));
+        // Load the CSS file
+        String cssFile = getClass().getResource("application.css").toExternalForm();
+
+        // Apply the stylesheet to the scene
+        primaryStage.getScene().getStylesheets().add(cssFile);
         primaryStage.show();
     }
 

@@ -1,0 +1,8 @@
+.selected {
+    -fx-border-style: dashed;
+    -fx-border-width: 2px;
+    -fx-border-color: rgb(255, 255, 255);
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, #000000, 10, 0, 0, 0);
+
+}
