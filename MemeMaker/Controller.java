@@ -42,6 +42,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.image.WritableImage;
 import javax.imageio.ImageIO;
@@ -157,7 +158,7 @@ public class Controller {
     @FXML
     void AddTextBox(ActionEvent event) {
         Label label = new Label("Text will appear here");
-        label.setMaxWidth(300);
+        // label.setMaxWidth(300);
         // label.setId("resultLabel");
         label.setWrapText(true); // Enable word wrapping for the label
         label.setPrefHeight(Label.USE_COMPUTED_SIZE);
@@ -286,6 +287,11 @@ public class Controller {
         scale.setX(1);
         scale.setY(1);
 
+        if (selectedNode != null) {
+            selectedNode.getStyleClass().remove("selected");
+            selectedNode = null;
+        }
+
         // Create a WritableImage object with the same dimensions as the AnchorPane
         WritableImage writableImage = new WritableImage((int) drawingCanvas.getWidth(),
                 (int) drawingCanvas.getHeight());
@@ -334,7 +340,7 @@ public class Controller {
         if (event.getButton() == javafx.scene.input.MouseButton.MIDDLE) {
             sourceNode = drawingCanvas;
         } else {
-            if(selectedNode != null){
+            if (selectedNode != null) {
                 selectedNode.getStyleClass().remove("selected");
                 selectedNode = null;
             }
@@ -358,8 +364,13 @@ public class Controller {
         double newX = event.getSceneX() - moveDragX;
         double newY = event.getSceneY() - moveDragY;
 
-        sourceNode.setTranslateX( sourceNode.getTranslateX() + ( newX ) / scale.getX());
-        sourceNode.setTranslateY( sourceNode.getTranslateY() + ( newY ) / scale.getY());
+        if (event.getButton() == javafx.scene.input.MouseButton.SECONDARY) {
+            ((Region) selectedNode).setPrefWidth(((Region) sourceNode).getPrefWidth() + newX / scale.getX());
+            ((Label) selectedNode).setFont(new javafx.scene.text.Font(((Label) selectedNode).getFont().getSize() + newY / (scale.getY() * 5)));
+        } else {
+            sourceNode.setTranslateX(sourceNode.getTranslateX() + (newX) / scale.getX());
+            sourceNode.setTranslateY(sourceNode.getTranslateY() + (newY) / scale.getY());
+        }
 
         moveDragX = event.getSceneX();
         moveDragY = event.getSceneY();
