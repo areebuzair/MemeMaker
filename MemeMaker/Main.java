@@ -29,6 +29,9 @@ public class Main extends Application {
                     case BACK_SPACE:
                         controller.deleteSelectedNode();
                         break;
+                    case HOME:
+                        controller.bringCanvasHome();
+                        break;
                     default:
                     System.out.println(event.getCode());
                         break;

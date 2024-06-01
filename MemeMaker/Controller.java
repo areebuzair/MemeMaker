@@ -29,6 +29,7 @@ import javafx.geometry.Insets;
 import javafx.scene.layout.CornerRadii;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 // import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -133,9 +134,13 @@ public class Controller {
             imageView.setOnMouseClicked(event -> {
                 Image clickedImage = ((ImageView) event.getSource()).getImage();
                 ImageView copyImageView = new ImageView(clickedImage);
+                copyImageView.setFitWidth(clickedImage.getWidth());
+                copyImageView.setFitHeight(clickedImage.getHeight());
 
                 copyImageView.setOnMousePressed(e -> Pressed(e));
                 copyImageView.setOnMouseDragged(e -> Drag(e));
+                copyImageView.getStyleClass().add("selectable");
+
 
                 drawingCanvas.getChildren().add(copyImageView);
                 AnchorPane.setTopAnchor(copyImageView, 0.0);
@@ -162,6 +167,7 @@ public class Controller {
         // label.setId("resultLabel");
         label.setWrapText(true); // Enable word wrapping for the label
         label.setPrefHeight(Label.USE_COMPUTED_SIZE);
+        label.getStyleClass().add("selectable");
 
         label.setOnMousePressed(e -> Pressed(e));
         label.setOnMouseDragged(e -> Drag(e));
@@ -319,6 +325,7 @@ public class Controller {
     @FXML
     void CanvasPan(MouseEvent event) {
         Node sourceNode;
+        drawingCanvas.requestFocus();
         if (event.getButton() == javafx.scene.input.MouseButton.MIDDLE) {
             sourceNode = drawingCanvas;
         } else {
@@ -365,8 +372,18 @@ public class Controller {
         double newY = event.getSceneY() - moveDragY;
 
         if (event.getButton() == javafx.scene.input.MouseButton.SECONDARY) {
-            ((Region) selectedNode).setPrefWidth(((Region) sourceNode).getPrefWidth() + newX / scale.getX());
-            ((Label) selectedNode).setFont(new javafx.scene.text.Font(((Label) selectedNode).getFont().getSize() + newY / (scale.getY() * 5)));
+            if (selectedNode instanceof Label) {
+                ((Region) selectedNode).setPrefWidth(((Region) sourceNode).getPrefWidth() + newX / scale.getX());
+                if (((Label) selectedNode).getFont().getSize() + newY / (scale.getY() * 5) < 700)
+                    ((Label) selectedNode).setFont(new javafx.scene.text.Font(
+                            ((Label) selectedNode).getFont().getSize() + newY / (scale.getY() * 5)));
+                System.out.println(((Label) selectedNode).getFont().getSize());
+            } else {
+                ((ImageView) selectedNode).setFitWidth(((ImageView) sourceNode).getFitWidth() + newX / scale.getX());
+                ((ImageView) selectedNode).setPreserveRatio(event.isShiftDown());
+                ((ImageView) selectedNode).setFitHeight(((ImageView) sourceNode).getFitHeight() + newY / scale.getY());
+            }
+
         } else {
             sourceNode.setTranslateX(sourceNode.getTranslateX() + (newX) / scale.getX());
             sourceNode.setTranslateY(sourceNode.getTranslateY() + (newY) / scale.getY());
@@ -376,12 +393,13 @@ public class Controller {
         moveDragY = event.getSceneY();
 
         event.consume();
-        System.out.println(sourceNode.getTranslateX());
-        System.out.println(":---");
+        // System.out.println(sourceNode.getTranslateX());
+        // System.out.println(":---");
     }
 
     // @FXML
     void Pressed(MouseEvent event) {
+        drawingCanvas.requestFocus();
         if (event.getButton() == javafx.scene.input.MouseButton.MIDDLE) {
             return;
         }
@@ -421,6 +439,13 @@ public class Controller {
         } else {
             System.out.println("Selected node is not a Label.");
         }
+    }
+
+    public void bringCanvasHome(){
+        drawingCanvas.setTranslateX(0);
+        drawingCanvas.setTranslateY(0);
+        scale.setX(1);
+        scale.setY(1);
     }
 
 }
