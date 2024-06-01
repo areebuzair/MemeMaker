@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 // import java.io.IOException;
 import javafx.event.EventHandler;
@@ -17,6 +18,7 @@ public class Main extends Application {
         Parent root = loader.load();
         Controller controller = loader.getController();
         controller.setCanvas();
+        controller.initialize();
 
         root.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
@@ -46,10 +48,17 @@ public class Main extends Application {
 
         // Apply the stylesheet to the scene
         primaryStage.getScene().getStylesheets().add(cssFile);
+
+        Image icon = new Image("icon.png");
+        primaryStage.getIcons().add(icon);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
     public static void main(String[] args) {
+        System.setProperty("prism.order", "sw"); // Forces software rendering
+        // Alternatively, use "es2" or "es2, d3d" to prefer OpenGL
+        System.setProperty("prism.order", "es2, d3d");
         launch(args);
     }
 }

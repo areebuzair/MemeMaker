@@ -8,6 +8,8 @@ package MemeMaker;
 import javafx.scene.input.KeyEvent;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 // import javafx.event.Event;
 // import javafx.event.EventHandler;
 // import java.time.LocalDate;
@@ -19,9 +21,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 // import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 // import javafx.stage.Stage;
 import javafx.embed.swing.SwingFXUtils;
@@ -34,6 +38,7 @@ import javafx.scene.Node;
 // import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 // import javafx.scene.control.ScrollPane;
 // import javafx.application.Application;
@@ -43,8 +48,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.scene.image.WritableImage;
 import javax.imageio.ImageIO;
 // import java.io.File;
@@ -54,11 +61,18 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 // import javafx.stage.Stage;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
+
+    @FXML
+    void visitReadMe(ActionEvent event) throws IOException {
+        Desktop desktop = Desktop.getDesktop();
+        desktop.browse(java.net.URI.create("https://www.google.com"));
+    }
 
     @FXML
     private ScrollPane assetbrowser;
@@ -70,7 +84,22 @@ public class Controller {
     private AnchorPane CanvasArea;
 
     @FXML
+    private TextField canvasHeight;
+
+    @FXML
+    private TextField canvasWidth;
+
+    @FXML
     private Button folderchooser;
+
+    @FXML
+    private ComboBox<String> fontComboBox;
+
+    @FXML
+    private ColorPicker fontColorPicker;
+
+    @FXML
+    private VBox TextSettings;
 
     private AnchorPane drawingCanvas;
 
@@ -87,10 +116,50 @@ public class Controller {
     @FXML
     private TextArea textInputArea;
 
+    @FXML
+    public void initialize() {
+        // Populate the ComboBox with system font families
+        fontComboBox.getItems().addAll(Font.getFamilies());
+
+        // Set a default font
+        fontComboBox.getSelectionModel().select("System");
+
+        // Set a default color for the ColorPicker
+        fontColorPicker.setValue(Color.BLACK);
+
+        TextSettings.setVisible(false);
+    }
+
     public void changeColor(ActionEvent evemt) {
         Color myColor = myColorPicker.getValue();
         drawingCanvas.setBackground(new Background(new BackgroundFill(myColor, null,
                 null)));
+    }
+
+    @FXML
+    void changeFontColor(ActionEvent event) {
+        if (selectedNode instanceof Label) {
+            // Get the selected color from the ColorPicker
+            Color selectedColor = fontColorPicker.getValue();
+
+            // Set the default color to black if no color is selected
+            if (selectedColor == null) {
+                selectedColor = Color.BLACK;
+            }
+
+            // Apply the selected color to the font of the selected Label
+            ((Label) selectedNode).setTextFill(selectedColor);
+        }
+    }
+
+    @FXML
+    void changeFont(ActionEvent event) {
+        // Get the selected font family from the ComboBox
+        String selectedFont = fontComboBox.getSelectionModel().getSelectedItem();
+        if (selectedFont != null && selectedNode instanceof Label) {
+            // Apply the selected font family to the selected Label
+            ((Label) selectedNode).setFont(Font.font(selectedFont, ((Label) selectedNode).getFont().getSize()));
+        }
     }
 
     public void setAssetbrowser(String folderpath) {
@@ -141,7 +210,6 @@ public class Controller {
                 copyImageView.setOnMousePressed(e -> Pressed(e));
                 copyImageView.setOnMouseDragged(e -> Drag(e));
                 copyImageView.getStyleClass().add("selectable");
-
 
                 drawingCanvas.getChildren().add(copyImageView);
                 AnchorPane.setTopAnchor(copyImageView, 0.0);
@@ -239,15 +307,17 @@ public class Controller {
     public void setCanvas() {
         selectedNode = null;
         drawingCanvas = new AnchorPane();
-        drawingCanvas.setPrefSize(1200, 675); // Set initial size
+        drawingCanvas.setPrefSize(
+                Double.valueOf(canvasWidth.getText()),
+                Double.valueOf(canvasHeight.getText())); // Set initial size
         drawingCanvas.setMinWidth(AnchorPane.USE_PREF_SIZE);
         drawingCanvas.setMaxWidth(AnchorPane.USE_PREF_SIZE);
         drawingCanvas.setMinHeight(AnchorPane.USE_PREF_SIZE);
         drawingCanvas.setMaxHeight(AnchorPane.USE_PREF_SIZE);
         drawingCanvas.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        AnchorPane.setTopAnchor(drawingCanvas, 0.0);
-        AnchorPane.setLeftAnchor(drawingCanvas, 0.0);
+        AnchorPane.setTopAnchor(drawingCanvas, (CanvasArea.getPrefHeight() - drawingCanvas.getPrefHeight()) / 2);
+        AnchorPane.setLeftAnchor(drawingCanvas, (CanvasArea.getPrefWidth() - drawingCanvas.getPrefWidth()) / 2);
         // canvasField.setBackground(new Background(new BackgroundFill(Color.YELLOW,
         // CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -279,9 +349,9 @@ public class Controller {
         CanvasArea.setOnScroll((ScrollEvent event) -> {
             event.consume();
             double deltaY = event.getDeltaY();
-            double scaleFactor = 0.01; // Adjust this factor as needed
-            double newScale = Math.max(scale.getX() + deltaY * scaleFactor, 0.1); // Ensure scale doesn't become
-                                                                                  // negative
+            double scaleFactor = 0.0078125; // Adjust this factor as needed
+            double newScale = Math.max(scale.getX() + deltaY * scaleFactor, 0.03125); // Ensure scale doesn't become
+            // negative
 
             scale.setX(newScale);
             scale.setY(newScale);
@@ -301,6 +371,7 @@ public class Controller {
         if (selectedNode != null) {
             selectedNode.getStyleClass().remove("selected");
             selectedNode = null;
+            TextSettings.setVisible(false);
         }
 
         // Create a WritableImage object with the same dimensions as the AnchorPane
@@ -311,12 +382,24 @@ public class Controller {
         drawingCanvas.snapshot(null, writableImage);
         // LocalDate currentDate = LocalDate.now();
         LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String formattedDateTime = currentDateTime.format(formatter);
 
         // Printing the current date and time
         // System.out.println("Current Date and Time: " );
 
         // Create a file to save the screenshot
-        File file = new File("Meme - " + String.valueOf(currentDateTime).replace(".", "").replace(":", "") + " .png");
+        // File file = new File("Meme - " + String.valueOf(currentDateTime).replace(".",
+        // "").replace(":", "") + " .png");
+
+        FileChooser fileChooser = new FileChooser();
+        // Set extension filter for PNG files
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.png");
+        fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.setInitialFileName("Meme_" + formattedDateTime + ".png");
+
+        // Show save file dialog
+        File file = fileChooser.showSaveDialog((Stage) drawingCanvas.getScene().getWindow());
 
         try {
             // Write the image to the file
@@ -339,8 +422,24 @@ public class Controller {
         double newX = event.getSceneX() - moveDragX;
         double newY = event.getSceneY() - moveDragY;
 
-        sourceNode.setTranslateX(newX);
-        sourceNode.setTranslateY(newY);
+        if (event.isShiftDown()) {
+            double newW = drawingCanvas.getPrefWidth() + newX / scale.getX();
+            double newH = drawingCanvas.getPrefHeight() + newY / scale.getY();
+            if (newW > 0) {
+                drawingCanvas.setPrefWidth((double) Math.round(newW));
+                canvasWidth.setText(String.valueOf(Math.round(newW)));
+            }
+            if (newH > 0) {
+                drawingCanvas.setPrefHeight((double) Math.round(newH));
+                canvasHeight.setText(String.valueOf(Math.round(newH)));
+            }
+        } else {
+            sourceNode.setTranslateX(sourceNode.getTranslateX() + newX);
+            sourceNode.setTranslateY(sourceNode.getTranslateY() + newY);
+        }
+
+        moveDragX = event.getSceneX();
+        moveDragY = event.getSceneY();
         event.consume();
         // // System.out.println(Dragger.getLayoutX());
         // System.out.println(":---");
@@ -348,20 +447,23 @@ public class Controller {
 
     @FXML
     void CanvasPanStart(MouseEvent event) {
-        Node sourceNode;
-        if (event.getButton() == javafx.scene.input.MouseButton.MIDDLE) {
-            sourceNode = drawingCanvas;
-        } else {
+        // Node sourceNode;
+        if (event.getButton() != javafx.scene.input.MouseButton.MIDDLE) {
             if (selectedNode != null) {
                 selectedNode.getStyleClass().remove("selected");
                 selectedNode = null;
+                TextSettings.setVisible(false);
+
             }
             return;
         }
 
         // Prepare for drag
-        moveDragX = (event.getSceneX() - sourceNode.getTranslateX());
-        moveDragY = (event.getSceneY() - sourceNode.getTranslateY());
+        // moveDragX = (event.getSceneX() - sourceNode.getTranslateX());
+        // moveDragY = (event.getSceneY() - sourceNode.getTranslateY());
+
+        moveDragX = (event.getSceneX());
+        moveDragY = (event.getSceneY());
 
         event.consume();
         // System.out.println(event.getSceneX());
@@ -379,17 +481,25 @@ public class Controller {
         if (event.getButton() == javafx.scene.input.MouseButton.SECONDARY) {
             if (selectedNode instanceof Label) {
                 ((Region) selectedNode).setPrefWidth(((Region) sourceNode).getPrefWidth() + newX / scale.getX());
-                if (((Label) selectedNode).getFont().getSize() + newY / (scale.getY() * 5) < 700)
+                if (((Label) selectedNode).getFont().getSize() + newY / (scale.getY() * 5) < 500)
                     ((Label) selectedNode).setFont(new javafx.scene.text.Font(
+                            ((Label) selectedNode).getFont().getName(),
                             ((Label) selectedNode).getFont().getSize() + newY / (scale.getY() * 5)));
                 System.out.println(((Label) selectedNode).getFont().getSize());
             } else {
-                ((ImageView) selectedNode).setFitWidth(((ImageView) sourceNode).getFitWidth() + newX / scale.getX());
-                ((ImageView) selectedNode).setPreserveRatio(event.isShiftDown());
                 ((ImageView) selectedNode).setFitHeight(((ImageView) sourceNode).getFitHeight() + newY / scale.getY());
+                ((ImageView) selectedNode).setPreserveRatio(event.isShiftDown());
+                ((ImageView) selectedNode).setFitWidth(((ImageView) sourceNode).getFitWidth() + newX / scale.getX());
             }
 
         } else {
+            if (event.isShiftDown()) {
+                if (Math.abs(newX) > Math.abs(newY)) {
+                    newY = 0;
+                } else {
+                    newX = 0;
+                }
+            }
             sourceNode.setTranslateX(sourceNode.getTranslateX() + (newX) / scale.getX());
             sourceNode.setTranslateY(sourceNode.getTranslateY() + (newY) / scale.getY());
         }
@@ -420,7 +530,27 @@ public class Controller {
         moveDragY = (event.getSceneY());
 
         if (selectedNode instanceof Label) {
-            textInputArea.setText(((Label) event.getSource()).getText());
+            textInputArea.setText(((Label) selectedNode).getText());
+            // Set a default font
+            fontComboBox.getSelectionModel().select(((Label) selectedNode).getFont().getName());
+
+            // Set a default color for the ColorPicker
+            fontColorPicker.setValue((Color) ((Label) selectedNode).getTextFill());
+
+            TextSettings.setVisible(true);
+
+        } else {
+            TextSettings.setVisible(false);
+        }
+
+        if (event.isAltDown()) {
+            Pane parent = (Pane) selectedNode.getParent();
+            int index = parent.getChildren().indexOf(selectedNode);
+
+            if (index > 0) {
+                parent.getChildren().remove(selectedNode);
+                parent.getChildren().add(index - 1, selectedNode);
+            }
         }
         // System.out.println(event.getSceneX());
         event.consume();
@@ -431,6 +561,7 @@ public class Controller {
             return;
         drawingCanvas.getChildren().remove(selectedNode);
         selectedNode = null;
+        TextSettings.setVisible(false);
     }
 
     @FXML
@@ -447,9 +578,11 @@ public class Controller {
         }
     }
 
-    public void bringCanvasHome(){
+    public void bringCanvasHome() {
         drawingCanvas.setTranslateX(0);
         drawingCanvas.setTranslateY(0);
+        AnchorPane.setTopAnchor(drawingCanvas, 0.0);
+        AnchorPane.setLeftAnchor(drawingCanvas, 0.0);
         scale.setX(1);
         scale.setY(1);
     }
@@ -462,8 +595,8 @@ public class Controller {
         if (text.matches("-?\\d+(\\.\\d+)?") && Double.valueOf(text) > 0) {
             drawingCanvas.setPrefHeight(Double.valueOf(text));
         } else {
-            ((TextField) event.getSource()).setText(String.valueOf(drawingCanvas.getPrefHeight()));
-        } 
+            ((TextField) event.getSource()).setText(String.valueOf(Math.round(drawingCanvas.getPrefHeight())));
+        }
     }
 
     @FXML
@@ -474,8 +607,8 @@ public class Controller {
         if (text.matches("-?\\d+(\\.\\d+)?") && Double.valueOf(text) > 0) {
             drawingCanvas.setPrefWidth(Double.valueOf(text));
         } else {
-            ((TextField) event.getSource()).setText(String.valueOf(drawingCanvas.getPrefWidth()));
-        } 
+            ((TextField) event.getSource()).setText(String.valueOf(Math.round(drawingCanvas.getPrefWidth())));
+        }
     }
 
 }

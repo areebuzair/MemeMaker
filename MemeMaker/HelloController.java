@@ -1,4 +1,4 @@
-package dead.layer_dragging;
+package MemeMaker;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,11 +19,10 @@ public class HelloController {
     private ComboBox<String> fontComboBox;
 
     @FXML
-    private ColorPicker colorPicker;
+    private ColorPicker fontColorPicker;
 
     private Node selectedNode;
 
-    @FXML
     public void initialize() {
         // Populate the ComboBox with system font families
         fontComboBox.getItems().addAll(Font.getFamilies());
@@ -32,7 +31,7 @@ public class HelloController {
         fontComboBox.getSelectionModel().select("System");
 
         // Set a default color for the ColorPicker
-        colorPicker.setValue(Color.BLACK);
+        fontColorPicker.setValue(Color.BLACK);
     }
 
     public void press(MouseEvent mouseEvent) {
@@ -52,7 +51,7 @@ public class HelloController {
     void changeFontColor(ActionEvent event) {
         if (selectedNode instanceof Label) {
             // Get the selected color from the ColorPicker
-            Color selectedColor = colorPicker.getValue();
+            Color selectedColor = fontColorPicker.getValue();
 
             // Set the default color to black if no color is selected
             if (selectedColor == null) {
