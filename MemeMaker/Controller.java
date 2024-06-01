@@ -29,7 +29,7 @@ import javafx.geometry.Insets;
 import javafx.scene.layout.CornerRadii;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
+// import javafx.scene.Cursor;
 import javafx.scene.Node;
 // import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -51,6 +51,7 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 // import javafx.stage.Stage;
 
 import java.io.File;
@@ -238,7 +239,11 @@ public class Controller {
     public void setCanvas() {
         selectedNode = null;
         drawingCanvas = new AnchorPane();
-        drawingCanvas.setPrefSize(400, 50); // Set initial size
+        drawingCanvas.setPrefSize(1200, 675); // Set initial size
+        drawingCanvas.setMinWidth(AnchorPane.USE_PREF_SIZE);
+        drawingCanvas.setMaxWidth(AnchorPane.USE_PREF_SIZE);
+        drawingCanvas.setMinHeight(AnchorPane.USE_PREF_SIZE);
+        drawingCanvas.setMaxHeight(AnchorPane.USE_PREF_SIZE);
         drawingCanvas.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 
         AnchorPane.setTopAnchor(drawingCanvas, 0.0);
@@ -407,6 +412,7 @@ public class Controller {
             selectedNode.getStyleClass().remove("selected");
         Node sourceNode = (Node) event.getSource();
         selectedNode = sourceNode;
+        selectedNode.getStyleClass().remove("selected");
         selectedNode.getStyleClass().add("selected");
 
         // Prepare for drag
@@ -446,6 +452,30 @@ public class Controller {
         drawingCanvas.setTranslateY(0);
         scale.setX(1);
         scale.setY(1);
+    }
+
+    @FXML
+    void changeCanvasHeight(ActionEvent event) {
+        String text = ((TextField) event.getSource()).getText();
+
+        // Check if the text is a number using a regular expression
+        if (text.matches("-?\\d+(\\.\\d+)?") && Double.valueOf(text) > 0) {
+            drawingCanvas.setPrefHeight(Double.valueOf(text));
+        } else {
+            ((TextField) event.getSource()).setText(String.valueOf(drawingCanvas.getPrefHeight()));
+        } 
+    }
+
+    @FXML
+    void changeCanvasWidth(ActionEvent event) {
+        String text = ((TextField) event.getSource()).getText();
+
+        // Check if the text is a number using a regular expression
+        if (text.matches("-?\\d+(\\.\\d+)?") && Double.valueOf(text) > 0) {
+            drawingCanvas.setPrefWidth(Double.valueOf(text));
+        } else {
+            ((TextField) event.getSource()).setText(String.valueOf(drawingCanvas.getPrefWidth()));
+        } 
     }
 
 }

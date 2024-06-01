@@ -4,10 +4,10 @@
     -fx-border-color: rgb(255, 153, 0);
     -fx-effect: innershadow(gaussian, rgb(255, 153, 0), 20, 0, 0, 0);
 }
-.selectable:hover{
+/* .selectable:hover{
     -fx-border-style: dashed;
     -fx-border-width: 1px;
     -fx-border-color: rgb(55, 0, 255);
     -fx-effect: innershadow(gaussian, rgb(55, 0, 255), 20, 0, 0, 0);
     -fx-cursor: HAND;
-}
+} */

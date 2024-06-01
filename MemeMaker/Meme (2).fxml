@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="myPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="840.0" style="-fx-background-color: #172033;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MemeMaker.Controller">
+   <children>
+      <AnchorPane fx:id="CanvasArea" layoutX="151.0" layoutY="26.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragged="#CanvasPan" onMousePressed="#CanvasPanStart" prefHeight="475.0" prefWidth="490.0" style="-fx-background-color: #94938e;" />
+      <ScrollPane fx:id="assetbrowser" layoutX="640.0" layoutY="120.0" prefHeight="380.0" prefWidth="200.0" />
+      <AnchorPane layoutX="640.0" layoutY="25.0" prefHeight="95.0" prefWidth="200.0" style="-fx-background-color: #d4d2cb;">
+         <children>
+            <ImageView fitHeight="95.0" fitWidth="200.0">
+               <image>
+                  <Image url="@441095472_1012792563608350_9121091757886173964_n.jpg" />
+               </image>
+            </ImageView>
+            <Button fx:id="defaultfolder" layoutX="10.0" layoutY="37.0" mnemonicParsing="false" onAction="#SetDefaultBrowser" prefHeight="6.0" prefWidth="73.0" style="-fx-background-color: #d4d2cb;" text="Default" />
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="57.0" layoutY="14.0" prefHeight="17.0" prefWidth="85.0" text="Assets" textFill="WHITE" />
+            <Button fx:id="folderchooser" layoutX="93.0" layoutY="37.0" mnemonicParsing="false" onAction="#ChooseImageFolder" prefHeight="18.0" prefWidth="96.0" style="-fx-background-color: #d4d2cb;" text="Choose Folder" textFill="#080808" />
+         </children>
+      </AnchorPane>
+      <MenuBar prefHeight="25.0" prefWidth="840.0" style="-fx-background-color: #acacad;">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <AnchorPane layoutY="25.0" prefHeight="475.0" prefWidth="141.0" style="-fx-background-color: #d4d2cb;">
+         <children>
+            <ImageView fitHeight="475.0" fitWidth="150.0" layoutX="1.0" layoutY="1.0">
+               <image>
+                  <Image url="@441095472_1012792563608350_9121091757886173964_n.jpg" />
+               </image>
+            </ImageView>
+            <Button layoutX="28.0" layoutY="396.0" mnemonicParsing="false" onAction="#saveImage" prefHeight="42.0" prefWidth="86.0" style="-fx-background-color: #FFF2D7;" text="Save Image">
+               <font>
+                  <Font name="Times New Roman Bold" size="13.0" />
+               </font>
+            </Button>
+            <ColorPicker fx:id="myColorPicker" layoutX="28.0" layoutY="352.0" onAction="#changeColor" prefHeight="30.0" prefWidth="86.0" style="-fx-background-color: #FFF2D7;" />
+            <Button layoutX="39.0" layoutY="55.0" mnemonicParsing="false" onAction="#AddTextBox" style="-fx-background-color: #d4d2cb;" text="Add Text" />
+            <TextArea fx:id="textInputArea" layoutX="10.0" layoutY="92.0" onKeyTyped="#ChangeLabelText" prefHeight="95.0" prefWidth="121.0" wrapText="true" />
+            <TextField layoutX="-3.0" layoutY="225.0" onAction="#changeCanvasWidth" prefHeight="26.0" prefWidth="150.0" text="1200">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </TextField>
+            <TextField layoutX="-3.0" layoutY="275.0" onAction="#changeCanvasHeight" prefHeight="26.0" prefWidth="150.0" text="675">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </TextField>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
