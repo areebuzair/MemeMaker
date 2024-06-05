@@ -3,8 +3,9 @@ MemeMaker
 
 ### An ultra-fluid image editor for making memes
 
-- [View all hotkeys](#shortcuts)
-- [Compile and Run the source code]()
+- [UI Description](#UI-Description)
+- [View all hotkeys and mouse shortcuts](#shortcuts)
+- [Compile and Run the source code](#compile-and-run-source-code)
 
 > [!NOTE]
 > In the following text, _objects_ refer to _images_ or _texts_ placed on the canvas.  
