@@ -102,7 +102,7 @@ md app
 jar --create --file=app/MemeMaker.jar --main-class=MemeMaker.Main -C classes .
 java --module-path "PathToLib" --add-modules=javafx.controls,javafx.fxml,javafx.swing -jar app/MemeMaker.jar
 ```
-> [IMPORTANT]
+> [!IMPORTANT]
 > Replace "PathToLib" with the location to the lib folder of your JavaFX SDK. It should look something like: C:\downloads\javafx-sdk-21.0.2\lib
   
 Thanks from Team Meme Addicts.
