@@ -1,20 +1,9 @@
 package MemeMaker;
 
-// import javafx.application.Application;
-// import javafx.beans.value.ChangeListener;
-// import javafx.beans.value.ObservableValue;
-// import javafx.scene.Scene;
-// import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyEvent;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-// import javafx.event.Event;
-// import javafx.event.EventHandler;
-// import java.time.LocalDate;
 import javafx.scene.control.ScrollPane;
-// import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
@@ -22,28 +11,20 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-// import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-// import javafx.stage.Stage;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.scene.layout.CornerRadii;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-// import javafx.scene.Cursor;
 import javafx.scene.Node;
-// import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-// import javafx.scene.control.ScrollPane;
-// import javafx.application.Application;
-// import javafx.geometry.Insets;
-// import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
@@ -54,13 +35,9 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.WritableImage;
 import javax.imageio.ImageIO;
-// import java.io.File;
 import java.io.IOException;
-
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-// import javafx.stage.Stage;
-
 import java.awt.Desktop;
 import java.io.File;
 import java.util.ArrayList;
@@ -71,7 +48,8 @@ public class Controller {
     @FXML
     void visitReadMe(ActionEvent event) throws IOException {
         Desktop desktop = Desktop.getDesktop();
-        desktop.browse(java.net.URI.create("https://www.google.com"));
+        desktop.browse(
+                java.net.URI.create("https://github.com/areebuzair/MemeMaker/tree/main?tab=readme-ov-file#mememaker"));
     }
 
     @FXML
@@ -115,6 +93,30 @@ public class Controller {
 
     @FXML
     private TextArea textInputArea;
+
+    private void openTextSettings() {
+        textInputArea.setText(((Label) selectedNode).getText());
+        // Set a default font
+        fontComboBox.getSelectionModel().select(((Label) selectedNode).getFont().getName());
+
+        // Set a default color for the ColorPicker
+        fontColorPicker.setValue((Color) ((Label) selectedNode).getTextFill());
+
+        TextSettings.setVisible(true);
+    }
+    
+    private void selectNode(Node sourceNode) {
+        if (selectedNode != null)
+            selectedNode.getStyleClass().remove("selected");
+        selectedNode = sourceNode;
+        selectedNode.getStyleClass().remove("selected");
+        selectedNode.getStyleClass().add("selected");
+        if (selectedNode instanceof Label) {
+            openTextSettings();
+        } else {
+            TextSettings.setVisible(false);
+        }
+    }
 
     @FXML
     public void initialize() {
@@ -163,7 +165,6 @@ public class Controller {
     }
 
     public void setAssetbrowser(String folderpath) {
-        // String folderPath = "D:/Areeb"; // Replace with your folder path
         List<Image> images = loadImagesFromFolder(folderpath);
 
         GridPane gridPane = createGridPane(images);
@@ -244,6 +245,8 @@ public class Controller {
         drawingCanvas.getChildren().add(label);
         AnchorPane.setTopAnchor(label, 0.0);
         AnchorPane.setLeftAnchor(label, 0.0);
+        
+        selectNode(label);
 
     }
 
@@ -282,7 +285,7 @@ public class Controller {
 
     @FXML
     void SetDefaultBrowser(ActionEvent event) {
-        setAssetbrowser("./Meme");
+        setAssetbrowser("./src/MemeMaker/Meme");
     }
 
     @FXML
@@ -318,20 +321,10 @@ public class Controller {
 
         AnchorPane.setTopAnchor(drawingCanvas, (CanvasArea.getPrefHeight() - drawingCanvas.getPrefHeight()) / 2);
         AnchorPane.setLeftAnchor(drawingCanvas, (CanvasArea.getPrefWidth() - drawingCanvas.getPrefWidth()) / 2);
-        // canvasField.setBackground(new Background(new BackgroundFill(Color.YELLOW,
-        // CornerRadii.EMPTY, Insets.EMPTY)));
-
-        // Add some text inside the AnchorPane
-        // Text text = new Text("Scroll to zoom");
-        // drawingCanvas.getChildren().add(text);
-        // AnchorPane.setTopAnchor(text, 10.0);
-        // AnchorPane.setLeftAnchor(text, 10.0);
 
         // Create a CanvasArea and set the AnchorPane as its content
         CanvasArea.getChildren().add(drawingCanvas);
 
-        // CanvasArea.setBackground(new Background(new BackgroundFill(Color.RED,
-        // CornerRadii.EMPTY, Insets.EMPTY)));
         // Disable the default scroll wheel function
         CanvasArea.setOnScrollStarted(e -> e.consume());
         // CanvasArea.setOnScroll(e -> e.consume());
@@ -351,14 +344,10 @@ public class Controller {
             double deltaY = event.getDeltaY();
             double scaleFactor = 0.0078125; // Adjust this factor as needed
             double newScale = Math.max(scale.getX() + deltaY * scaleFactor, 0.03125); // Ensure scale doesn't become
-            // negative
+                                                                                      // negative
 
             scale.setX(newScale);
             scale.setY(newScale);
-
-            // drawingCanvas.setStyle("-fx-scale-x: 1.5; -fx-scale-y: 1.5;");
-
-            // text.setText(String.valueOf(deltaY));
 
         });
     }
@@ -385,13 +374,6 @@ public class Controller {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
         String formattedDateTime = currentDateTime.format(formatter);
 
-        // Printing the current date and time
-        // System.out.println("Current Date and Time: " );
-
-        // Create a file to save the screenshot
-        // File file = new File("Meme - " + String.valueOf(currentDateTime).replace(".",
-        // "").replace(":", "") + " .png");
-
         FileChooser fileChooser = new FileChooser();
         // Set extension filter for PNG files
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.png");
@@ -406,7 +388,7 @@ public class Controller {
             ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png", file);
             System.out.println("Screenshot saved to: " + file.getAbsolutePath());
         } catch (IOException ex) {
-            System.err.println("Error saving screenshot: " + ex.getMessage());
+            System.err.println("Error saving screenshot: ");
         }
     }
 
@@ -458,15 +440,10 @@ public class Controller {
             return;
         }
 
-        // Prepare for drag
-        // moveDragX = (event.getSceneX() - sourceNode.getTranslateX());
-        // moveDragY = (event.getSceneY() - sourceNode.getTranslateY());
-
         moveDragX = (event.getSceneX());
         moveDragY = (event.getSceneY());
 
         event.consume();
-        // System.out.println(event.getSceneX());
     }
 
     // @FXML
@@ -485,7 +462,7 @@ public class Controller {
                     ((Label) selectedNode).setFont(new javafx.scene.text.Font(
                             ((Label) selectedNode).getFont().getName(),
                             ((Label) selectedNode).getFont().getSize() + newY / (scale.getY() * 5)));
-                System.out.println(((Label) selectedNode).getFont().getSize());
+                // System.out.println(((Label) selectedNode).getFont().getSize());
             } else {
                 ((ImageView) selectedNode).setFitHeight(((ImageView) sourceNode).getFitHeight() + newY / scale.getY());
                 ((ImageView) selectedNode).setPreserveRatio(event.isShiftDown());
@@ -508,8 +485,6 @@ public class Controller {
         moveDragY = event.getSceneY();
 
         event.consume();
-        // System.out.println(sourceNode.getTranslateX());
-        // System.out.println(":---");
     }
 
     // @FXML
@@ -518,30 +493,13 @@ public class Controller {
         if (event.getButton() == javafx.scene.input.MouseButton.MIDDLE) {
             return;
         }
-        if (selectedNode != null)
-            selectedNode.getStyleClass().remove("selected");
         Node sourceNode = (Node) event.getSource();
-        selectedNode = sourceNode;
-        selectedNode.getStyleClass().remove("selected");
-        selectedNode.getStyleClass().add("selected");
+
+        selectNode(sourceNode);
 
         // Prepare for drag
         moveDragX = (event.getSceneX());
         moveDragY = (event.getSceneY());
-
-        if (selectedNode instanceof Label) {
-            textInputArea.setText(((Label) selectedNode).getText());
-            // Set a default font
-            fontComboBox.getSelectionModel().select(((Label) selectedNode).getFont().getName());
-
-            // Set a default color for the ColorPicker
-            fontColorPicker.setValue((Color) ((Label) selectedNode).getTextFill());
-
-            TextSettings.setVisible(true);
-
-        } else {
-            TextSettings.setVisible(false);
-        }
 
         if (event.isAltDown()) {
             Pane parent = (Pane) selectedNode.getParent();
@@ -567,7 +525,6 @@ public class Controller {
     @FXML
     void ChangeLabelText(KeyEvent event) {
         String newText = textInputArea.getText();
-        // System.out.println("Fnc called");
 
         // Check if the selectedNode is a Label before casting
         if (selectedNode instanceof Label) {

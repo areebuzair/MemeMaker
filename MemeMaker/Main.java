@@ -14,7 +14,7 @@ import javafx.scene.input.KeyEvent;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Meme (2).fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Meme Latest.fxml"));
         Parent root = loader.load();
         Controller controller = loader.getController();
         controller.setCanvas();
@@ -35,7 +35,7 @@ public class Main extends Application {
                         controller.bringCanvasHome();
                         break;
                     default:
-                    System.out.println(event.getCode());
+                    // System.out.println(event.getCode());
                         break;
                 }
             }
@@ -49,7 +49,7 @@ public class Main extends Application {
         // Apply the stylesheet to the scene
         primaryStage.getScene().getStylesheets().add(cssFile);
 
-        Image icon = new Image("icon.png");
+        Image icon = new Image("MemeMaker/icon.png");
         primaryStage.getIcons().add(icon);
         primaryStage.setResizable(false);
         primaryStage.show();
