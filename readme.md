@@ -3,11 +3,14 @@ MemeMaker
 
 ### An ultra-fluid image editor for making memes
 
-###### In the following text, _objects_ refer to _images_ or _texts_ placed on the canvas.  
-This application requires a mouse to be run.  
-Making any object excessively large will cause the application to freeze. Stay within a 4000 \* 4000 resolution canvas size.
+> [!NOTE]
+> In the following text, _objects_ refer to _images_ or _texts_ placed on the canvas.  
 
-Reposition, resize images and add texts with minimum effort!  
+> [!WARNING]
+> This application requires a mouse to be run.
+> Making any object excessively large will cause the application to freeze. Stay within a 4000 \* 4000 resolution canvas size.
+
+Reposition, resize images and add texts with minimum effort! Meme maker is an app to put together memes in the quickest possible time. It allows fast resizing and repositioning of texts and images, and also a fluid resizing feature for the image canvas. Only the canvas area is renderable.
   
 The UI includes:
 
@@ -21,7 +24,9 @@ Clicking this button will add a Text to the canvas.
 
 #### Canvas Settings
 
-Choose the background colour, width and height of the canvas. **After setting the width or height, ENTER has to be pressed.**
+Choose the background colour, width and height of the canvas. 
+> [!IMPORTANT]
+> After setting the width or height, ENTER has to be pressed.
 
 #### Save Image
 
