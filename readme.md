@@ -18,6 +18,8 @@ Reposition, resize images and add texts with minimum effort! Meme maker is an ap
   
 ## UI Description
 
+![The App UI](UI.jpg "User Interface")
+
 #### Assets:
 
 From here, select a folder that will display all the images in that folder. Click on any image to add it to the canvas. Clicking default will open the inbuilt template library.
