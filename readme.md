@@ -1,4 +1,4 @@
-![MemeMaker Logo](/src/MemeMaker/icon.png "MemeMaker Logo")
+![MemeMaker Logo](/MemeMaker/icon.png "MemeMaker Logo")
 MemeMaker
 =========
 
